@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Group-Id: io.jenkins.plugins
+Short-Name: com.lishaowei.xes
+Long-Name: TODO Plugin
+Plugin-Version: 1.1.0/
+Hudson-Version: 2.7.3
+Jenkins-Version: 2.7.3
+Plugin-Developers: 
+Libraries: /Users/lishaowei/IdeaProjects/com.lishaowei.xes/src/main/re
+ sources,/Users/lishaowei/IdeaProjects/com.lishaowei.xes/target/classe
+ s,/Users/lishaowei/.m2/repository/com/alibaba/fastjson/1.2.12/fastjso
+ n-1.2.12.jar
+Resource-Path: /Users/lishaowei/IdeaProjects/com.lishaowei.xes/src/mai
+ n/webapp
+

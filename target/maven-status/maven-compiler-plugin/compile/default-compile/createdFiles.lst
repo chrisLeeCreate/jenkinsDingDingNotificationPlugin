@@ -1,0 +1,9 @@
+io/jenkins/plugins/JobListener.class
+io/jenkins/plugins/DingdingNotifier.stapler
+io/jenkins/plugins/DingdingNotifier$DingdingNotifierDescriptor.class
+io/jenkins/Messages.class
+io/jenkins/plugins/DingdingService.class
+META-INF/annotations/org.kohsuke.accmod.Restricted
+io/jenkins/plugins/DingdingServiceImpl.class
+io/jenkins/plugins/DingdingNotifier.class
+META-INF/annotations/hudson.Extension

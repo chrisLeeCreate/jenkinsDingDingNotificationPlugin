@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Built-By: lishaowei
+Created-By: Apache Maven
+Build-Jdk: 1.8.0_112
+Extension-Name: com.lishaowei.xes
+Specification-Title: TODO
+Implementation-Title: com.lishaowei.xes
+Implementation-Version: 1.1.0/
+Group-Id: io.jenkins.plugins
+Short-Name: com.lishaowei.xes
+Long-Name: TODO Plugin
+Plugin-Version: 1.1.0/
+Hudson-Version: 2.7.3
+Jenkins-Version: 2.7.3
+Plugin-Developers: 
+

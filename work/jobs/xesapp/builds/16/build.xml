@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<build>
+  <actions>
+    <hudson.model.ParametersAction>
+      <safeParameters class="sorted-set"/>
+      <parameters>
+        <hudson.model.StringParameterValue>
+          <name>DingGroupToken</name>
+          <description></description>
+          <value>7ea9208bf7207ac5f03e8064a665fb7e056720cb61207e3cfed0b021b2bcb657,6d1579eb5bee54bb29f968145d43a9313074553e11ac84a89232091bc2378c2d</value>
+        </hudson.model.StringParameterValue>
+        <hudson.model.StringParameterValue>
+          <name>DingMobilePhone</name>
+          <description></description>
+          <value>18611868743,15911088330</value>
+        </hudson.model.StringParameterValue>
+      </parameters>
+      <parameterDefinitionNames class="hudson.model.ParametersDefinitionProperty$1">
+        <outer-class>
+          <parameterDefinitions>
+            <hudson.model.StringParameterDefinition>
+              <name>DingGroupToken</name>
+              <description></description>
+              <defaultValue></defaultValue>
+            </hudson.model.StringParameterDefinition>
+            <hudson.model.StringParameterDefinition>
+              <name>DingMobilePhone</name>
+              <description></description>
+              <defaultValue></defaultValue>
+            </hudson.model.StringParameterDefinition>
+          </parameterDefinitions>
+        </outer-class>
+      </parameterDefinitionNames>
+    </hudson.model.ParametersAction>
+    <hudson.model.CauseAction>
+      <causeBag class="linked-hash-map">
+        <entry>
+          <hudson.model.Cause_-UserIdCause/>
+          <int>1</int>
+        </entry>
+      </causeBag>
+    </hudson.model.CauseAction>
+  </actions>
+  <queueId>16</queueId>
+  <timestamp>1526435516004</timestamp>
+  <startTime>1526435516005</startTime>
+  <result>FAILURE</result>
+  <duration>406</duration>
+  <charset>UTF-8</charset>
+  <keepLog>false</keepLog>
+  <builtOn></builtOn>
+  <workspace>/Users/lishaowei/IdeaProjects/com.lishaowei.xes/work/workspace/xesapp</workspace>
+  <hudsonVersion>2.7.3</hudsonVersion>
+  <scm class="hudson.scm.NullChangeLogParser"/>
+  <culprits class="com.google.common.collect.EmptyImmutableSortedSet"/>
+</build>
