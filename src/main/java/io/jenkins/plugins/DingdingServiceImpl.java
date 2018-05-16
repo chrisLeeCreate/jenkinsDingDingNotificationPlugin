@@ -19,7 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 /**
- * Created by Marvin on 16/10/8.
+ * Created by lishaowei on 16/10/8.
  */
 public class DingdingServiceImpl implements DingdingService {
 

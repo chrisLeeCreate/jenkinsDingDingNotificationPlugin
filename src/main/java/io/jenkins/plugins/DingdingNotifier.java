@@ -18,7 +18,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import java.io.IOException;
 
 /**
- * Created by Marvin on 16/8/25.
+ * Created by lishaowei on 16/8/25.
  */
 public class DingdingNotifier extends Notifier {
 

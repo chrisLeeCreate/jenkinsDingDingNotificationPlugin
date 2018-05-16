@@ -1,7 +1,7 @@
 package io.jenkins.plugins;
 
 /**
- * Created by Marvin on 16/10/8.
+ * Created by lishaowei on 16/10/8.
  */
 public interface DingdingService {
 
