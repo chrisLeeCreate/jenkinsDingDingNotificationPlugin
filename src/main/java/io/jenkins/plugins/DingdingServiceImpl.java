@@ -1,5 +1,6 @@
 package io.jenkins.plugins;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import hudson.EnvVars;
 import hudson.ProxyConfiguration;
@@ -219,8 +220,47 @@ public class DingdingServiceImpl implements DingdingService {
         }
     }
 
+    /**
+     * 发送静态代码
+     */
+    private void sendFeedInfoMessage() {
+        HttpClient client = getHttpClient();
 
-    private HttpClient getHttpClient() {
+        JSONObject body = new JSONObject();
+
+        JSONObject feedCardObject = new JSONObject();
+        JSONArray linksArray = new JSONArray();
+        JSONObject linkObject = new JSONObject();
+        linkObject.put("title", "静态代码检测bug链接");
+        linkObject.put("picURL", "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1531903510098&di=06de50ad2b96e3c635fd9272d699c350&imgtype=0&src=http://ds.devstore.cn/20150916/1442389250542/1440753602428155.png");
+        linkObject.put("messageURL", "http://10.4.2.65/Android/Apk/Archive/");
+        linksArray.add(linkObject);
+
+        feedCardObject.put("links", linksArray);
+        body.put("feedCard", feedCardObject);
+        body.put("msgtype", "feedCard");
+        String apiUrl = "";
+        if (true) {
+            //android 消息发送地址
+            apiUrl = "https://oapi.dingtalk.com/robot/send?access_token=e5d34730d4ebb3bc0ced59028b97fa551e79b946e3d269065a2dc4a9c238cd63";
+        } else {
+            //ios  消息发送地址
+            apiUrl = "https://oapi.dingtalk.com/robot/send?access_token=48213b8bb18e5aa0da8a9eecf3352da9095e76b90cef27dcc0e2d90b86b7d3aa";
+        }
+        PostMethod post = new PostMethod(apiUrl);
+        try {
+            post.setRequestEntity(new StringRequestEntity(body.toJSONString(), "application/json", "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        try {
+            client.executeMethod(post);
+        } catch (IOException e) {
+        }
+        post.releaseConnection();
+    }
+
+    private static HttpClient getHttpClient() {
         HttpClient client = new HttpClient();
         Jenkins jenkins = Jenkins.getInstance();
         if (jenkins != null && jenkins.proxy != null) {
@@ -231,7 +271,7 @@ public class DingdingServiceImpl implements DingdingService {
                 String password = proxy.getPassword();
                 // Consider it to be passed if username specified. Sufficient?
                 if (username != null && !"".equals(username.trim())) {
-                    logger.info("Using proxy authentication (user=" + username + ")");
+//                    logger.info("Using proxy authentication (user=" + username + ")");
                     client.getState().setProxyCredentials(AuthScope.ANY,
                             new UsernamePasswordCredentials(username, password));
                 }

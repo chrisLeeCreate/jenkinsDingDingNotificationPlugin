@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Group-Id: io.jenkins.plugins
 Short-Name: com.lishaowei.xes
-Long-Name: TODO Plugin
-Plugin-Version: 1.1.0/
+Long-Name: 学而思jenkins打包钉钉提醒
+Plugin-Version: 1.2.0/
 Hudson-Version: 2.7.3
 Jenkins-Version: 2.7.3
 Plugin-Developers: 
