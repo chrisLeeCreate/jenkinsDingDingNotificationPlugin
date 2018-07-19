@@ -36,6 +36,8 @@ public class DingdingServiceImpl implements DingdingService {
 
     private boolean onAbort;
 
+    private boolean fireline;
+
     private TaskListener listener;
 
     private AbstractBuild build;
@@ -46,7 +48,7 @@ public class DingdingServiceImpl implements DingdingService {
     private EnvVars env;
     private String[] mobilePhone;
 
-    public DingdingServiceImpl(String jenkinsURL, String token, boolean onStart, boolean onSuccess, boolean onFailed, boolean onAbort, TaskListener listener, AbstractBuild build, String mobilePhone) {
+    public DingdingServiceImpl(String jenkinsURL, String token, boolean onStart, boolean onSuccess, boolean onFailed, boolean onAbort, TaskListener listener, AbstractBuild build, String mobilePhone, boolean fireline) {
         this.jenkinsURL = jenkinsURL;
         this.onStart = onStart;
         this.onSuccess = onSuccess;
@@ -57,6 +59,7 @@ public class DingdingServiceImpl implements DingdingService {
 //        this.api = apiUrl + dingdingToken(token);
         this.apiList = getApiList(apiUrl, dingdingToken(token));
         this.mobilePhone = getMobilePhoneArray(mobilePhone);
+        this.fireline = fireline;
     }
 
     private String[] getMobilePhoneArray(String phone) {
@@ -98,7 +101,6 @@ public class DingdingServiceImpl implements DingdingService {
             logger.info("send link msg from " + listener.toString());
             sendLinkMessage(link, content, title, pic);
         }
-
     }
 
     private String getBuildUrl() {
@@ -120,6 +122,9 @@ public class DingdingServiceImpl implements DingdingService {
         if (onSuccess) {
             logger.info("send link msg from " + listener.toString());
             sendLinkMessage(link, content, title, pic);
+        }
+        if (fireline) {
+            sendFireLineMessage(build.getProject().getDisplayName());
         }
     }
 
@@ -219,11 +224,80 @@ public class DingdingServiceImpl implements DingdingService {
             post.releaseConnection();
         }
     }
+    /**
+     * 发送静态检测代码 link 形式
+     */
+    private void sendFireLineMessage(String projectName) {
+        HttpClient client = getHttpClient();
+
+        JSONObject body = new JSONObject();
+        body.put("msgtype", "link");
+
+        JSONObject linkObject = new JSONObject();
+        linkObject.put("text", projectName + "静态代码检测报告已经出炉，请查看");
+        linkObject.put("title", projectName + "静态代码检测报告");
+        linkObject.put("picUrl", "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1532007477320&di=b2a8321bda5171566836f0f29abec90a&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F018fc857b1871f0000012e7ec3eb73.jpg");
+        linkObject.put("messageUrl", "http://10.4.2.65:8080/job/android-fireline-xesapp/HTML_20Report/");
+
+        body.put("link", linkObject);
+        for (int i = 0; i < apiList.size(); i++) {
+            PostMethod post = new PostMethod(apiList.get(i));
+            try {
+                post.setRequestEntity(new StringRequestEntity(body.toJSONString(), "application/json", "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+                logger.error("build request error", e);
+            }
+            try {
+                client.executeMethod(post);
+                logger.info(post.getResponseBodyAsString());
+            } catch (IOException e) {
+                logger.error("send msg error", e);
+            }
+            post.releaseConnection();
+        }
+    }
 
     /**
-     * 发送静态代码
+     * 发送静态检测代码 action 形式
      */
-    private void sendFeedInfoMessage() {
+    public void sendActionMessage(String projectName) {
+
+        HttpClient client = getHttpClient();
+        JSONObject body = new JSONObject();
+        body.put("msgtype", "actionCard");
+
+        JSONObject linkObject = new JSONObject();
+        linkObject.put("text", "![screenshot](https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1532001735553&di=973166a5ba1629879a419095b01461e0&imgtype=0&src=http%3A%2F%2Fimgsrc.baidu.com%2Fimgad%2Fpic%2Fitem%2Ffaf2b2119313b07e46a0aa3307d7912397dd8ce8.jpg) \n #### 静态代码检测报告 \n\n " + projectName + "静态代码检测报告新鲜出炉，请查收！");
+        linkObject.put("title", projectName + "静态代码检测报告");
+        linkObject.put("hideAvatar", "0");
+        linkObject.put("btnOrientation", "0");
+        linkObject.put("singleTitle", "查看全部");
+        linkObject.put("singleURL", "http://10.4.2.65:8080/job/android-fireline-xesapp/HTML_20Report/");
+
+        body.put("actionCard", linkObject);
+        for (int i = 0; i < apiList.size(); i++) {
+            PostMethod post = new PostMethod(apiList.get(i));
+            try {
+                post.setRequestEntity(new StringRequestEntity(body.toJSONString(), "application/json", "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+                logger.error("build request error", e);
+            }
+            try {
+                client.executeMethod(post);
+                logger.info(post.getResponseBodyAsString());
+            } catch (IOException e) {
+                logger.error("send msg error", e);
+            }
+            post.releaseConnection();
+        }
+    }
+
+    /**
+     * 发送静态检测代码 feedinfo 形式
+     */
+    private void sendFeedInfoMessage(String projectName) {
         HttpClient client = getHttpClient();
 
         JSONObject body = new JSONObject();
@@ -231,33 +305,30 @@ public class DingdingServiceImpl implements DingdingService {
         JSONObject feedCardObject = new JSONObject();
         JSONArray linksArray = new JSONArray();
         JSONObject linkObject = new JSONObject();
-        linkObject.put("title", "静态代码检测bug链接");
-        linkObject.put("picURL", "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1531903510098&di=06de50ad2b96e3c635fd9272d699c350&imgtype=0&src=http://ds.devstore.cn/20150916/1442389250542/1440753602428155.png");
-        linkObject.put("messageURL", "http://10.4.2.65/Android/Apk/Archive/");
+        linkObject.put("title", projectName + "静态代码检测报告");
+        linkObject.put("picURL", "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1532002770381&di=0b273bd59b97de7875233ff6aa0ed560&imgtype=0&src=http%3A%2F%2Fimg2.mukewang.com%2F57d66de200014a7306000338.jpg");
+        linkObject.put("messageURL", "http://10.4.2.65:8080/job/android-fireline-xesapp/HTML_20Report/");
         linksArray.add(linkObject);
 
         feedCardObject.put("links", linksArray);
         body.put("feedCard", feedCardObject);
         body.put("msgtype", "feedCard");
-        String apiUrl = "";
-        if (true) {
-            //android 消息发送地址
-            apiUrl = "https://oapi.dingtalk.com/robot/send?access_token=e5d34730d4ebb3bc0ced59028b97fa551e79b946e3d269065a2dc4a9c238cd63";
-        } else {
-            //ios  消息发送地址
-            apiUrl = "https://oapi.dingtalk.com/robot/send?access_token=48213b8bb18e5aa0da8a9eecf3352da9095e76b90cef27dcc0e2d90b86b7d3aa";
+        for (int i = 0; i < apiList.size(); i++) {
+            PostMethod post = new PostMethod(apiList.get(i));
+            try {
+                post.setRequestEntity(new StringRequestEntity(body.toJSONString(), "application/json", "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+                logger.error("build request error", e);
+            }
+            try {
+                client.executeMethod(post);
+                logger.info(post.getResponseBodyAsString());
+            } catch (IOException e) {
+                logger.error("send msg error", e);
+            }
+            post.releaseConnection();
         }
-        PostMethod post = new PostMethod(apiUrl);
-        try {
-            post.setRequestEntity(new StringRequestEntity(body.toJSONString(), "application/json", "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        try {
-            client.executeMethod(post);
-        } catch (IOException e) {
-        }
-        post.releaseConnection();
     }
 
     private static HttpClient getHttpClient() {
